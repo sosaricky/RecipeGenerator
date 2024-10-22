@@ -13,7 +13,7 @@ class PreferencesController < ApplicationController
   def create
     @preference = Preference.new(preference_params)
     @preference.user = current_user
-    if @preference.save
+    if @preference.save!
       redirect_to preferences_path
     else
       render :new, status: unprocessable_entity
@@ -25,5 +25,4 @@ class PreferencesController < ApplicationController
   def preference_params
     params.require(:preference).permit(:name, :description, :restriction)
   end
-
 end

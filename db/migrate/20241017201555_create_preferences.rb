@@ -1,9 +1,10 @@
 class CreatePreferences < ActiveRecord::Migration[7.1]
   def change
     create_table :preferences do |t|
-      t.string :name
-      t.text :description
+      t.string :name, null: false
+      t.text :description, null: false
       t.boolean :restriction
+      t.references :user, null: false, foreign_key: true
 
       t.timestamps
     end
