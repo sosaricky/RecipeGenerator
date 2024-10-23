@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: preferences
@@ -20,8 +22,8 @@ RSpec.describe Preference do
   describe 'validations' do
     subject { build(:preference) }
 
-    it { is_expected.to validate_presence_of(:name)}
-    it { is_expected.to validate_presence_of(:description)}
+    it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_presence_of(:description) }
   end
 
   describe 'associations' do

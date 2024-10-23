@@ -52,7 +52,7 @@ class User < ApplicationRecord
   validates :uid, uniqueness: { scope: :provider }
   validates :email, uniqueness: true, on: :update
 
-  has_many :preferences
+  has_many :preferences, dependent: :destroy
 
   attribute :impersonated_by, :integer
 
