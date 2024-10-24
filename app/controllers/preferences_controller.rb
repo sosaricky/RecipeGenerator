@@ -6,6 +6,12 @@ class PreferencesController < ApplicationController
     @pagy, @records = pagy(@preferences)
   end
 
+  def show
+    @preference = Preference.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render plain: '404 Not Found', status: :not_found
+  end
+
   def new
     @preference = Preference.new
   end
