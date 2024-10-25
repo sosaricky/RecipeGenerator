@@ -5,6 +5,7 @@ require 'rails_helper'
 describe 'Preferences' do
   let(:user) { create(:user) }
   let(:preference) { build(:preference) }
+  let(:params) { { preference: preference.attributes } }
 
   before { sign_in user }
 
@@ -12,10 +13,6 @@ describe 'Preferences' do
     subject { post preferences_path, params: }
 
     context 'when sucess' do
-      let(:params) do
-        { preference: preference.attributes }
-      end
-
       it 'creates the preference' do
         expect { subject }.to change(Preference, :count).by(1)
       end
@@ -30,10 +27,7 @@ describe 'Preferences' do
     end
 
     context 'when fails' do
-      let(:params) do
-        preference.name = nil
-        { preference: preference.attributes }
-      end
+      let(:preference) { build(:preference, name: nil) }
 
       it 'does not create the preference' do
         expect { subject }.not_to change(Preference, :count)
