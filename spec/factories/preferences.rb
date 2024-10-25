@@ -18,9 +18,9 @@
 #
 FactoryBot.define do
   factory :preference do
-    name { 'MyString' }
-    description { 'MyText' }
-    restriction { false }
+    name { Faker::Food.dish }
+    description { Faker::Food.description }
+    restriction { Faker::Boolean.boolean }
     user
   end
 end

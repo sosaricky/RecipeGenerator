@@ -12,7 +12,7 @@ describe 'Preferences' do
   describe 'POST create' do
     subject { post preferences_path, params: }
 
-    context 'when sucess' do
+    context 'when success' do
       it 'creates the preference' do
         expect { subject }.to change(Preference, :count).by(1)
       end
