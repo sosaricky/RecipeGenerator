@@ -23,7 +23,7 @@ Rails.application.routes.draw do
   end
 
   resources :users
-  resources :preferences, only: %i[index create new]
+  resources :preferences, only: %i[index create new show]
   resources :recipes, only: %i[index]
 
   namespace :api do
@@ -36,6 +36,7 @@ Rails.application.routes.draw do
       resources :settings, only: [] do
         get :must_update, on: :collection
       end
+      resources :preferences, only: %i[show]
     end
   end
 
