@@ -53,7 +53,7 @@ class User < ApplicationRecord
   validates :email, uniqueness: true, on: :update
 
   has_many :preferences, dependent: :destroy
-
+  has_many :recipes, dependent: :destroy
   attribute :impersonated_by, :integer
 
   before_validation :init_uid
