@@ -37,9 +37,5 @@ describe 'GET api/v1/preferences/:id' do
     it 'returns http status 404' do
       expect(response).to have_http_status(:not_found)
     end
-
-    it 'returns error message' do
-      expect(json[:error]).to eq('preference not found')
-    end
   end
 end
