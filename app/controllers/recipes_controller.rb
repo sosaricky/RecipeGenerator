@@ -5,6 +5,12 @@ class RecipesController < ApplicationController
     @recipes = Recipe.all
   end
 
+  def show
+    @recipe = Recipe.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render plain: '404 Not Found', status: :not_found
+  end
+
   def new
     @recipe = Recipe.new
   end
