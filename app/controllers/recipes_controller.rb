@@ -16,8 +16,8 @@ class RecipesController < ApplicationController
     else
       render :new, status: :unprocessable_entity
     end
-  rescue RecipeGeneratorServiceError
-    head :unprocessable_entity
+  rescue RecipeGeneratorServiceError => exception
+    redirect_to recipes_path, alert: exception.message
   end
 
   private
