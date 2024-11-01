@@ -7,7 +7,32 @@ describe 'Recipes' do
   let(:recipe) { build(:recipe) }
   let(:params) { { recipe: recipe.attributes } }
 
-  before { sign_in user }
+  before do
+    stub_request(:post, 'https://api.openai.com/v1/chat/completions')
+      .to_return(
+        body:
+        {
+          choices: [
+            {
+              index: 0,
+              message: {
+                role: 'assistant',
+                content: <<-JSON
+              {
+                "name": "Potato and Rice Casserole",
+                "content": "Preheat the oven to 375°F"
+              }
+                JSON
+              }
+            }
+          ]
+        }
+        .to_json,
+        headers: { Content_Type: 'application/json' }
+      )
+
+    sign_in user
+  end
 
   describe 'POST create' do
     subject { post recipes_path, params: }
@@ -29,12 +54,12 @@ describe 'Recipes' do
     context 'when fails' do
       let(:recipe) { build(:recipe, ingredients: nil) }
 
-      it 'does not create the recipe' do
-        expect { subject }.not_to change(Recipe, :count)
+      it 'has http status 422' do
+        expect(subject).to eq(422)
       end
 
-      it 'have http status 422' do
-        expect(subject).to eq(422)
+      it 'does not create the recipe' do
+        expect { subject }.not_to change(Recipe, :count)
       end
     end
   end
