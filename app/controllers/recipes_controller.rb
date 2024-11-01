@@ -16,6 +16,8 @@ class RecipesController < ApplicationController
     else
       render :new, status: :unprocessable_entity
     end
+  rescue RecipeGeneratorServiceError
+    head :unprocessable_entity
   end
 
   private
