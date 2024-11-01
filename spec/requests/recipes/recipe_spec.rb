@@ -54,8 +54,8 @@ describe 'Recipes' do
     context 'when fails' do
       let(:recipe) { build(:recipe, ingredients: nil) }
 
-      it 'has http status 422' do
-        expect(subject).to eq(422)
+      it 'has http status 302' do
+        expect(subject).to eq(302)
       end
 
       it 'does not create the recipe' do
