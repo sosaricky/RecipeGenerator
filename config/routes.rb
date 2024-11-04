@@ -23,7 +23,7 @@ Rails.application.routes.draw do
   end
 
   resources :users
-  resources :preferences, only: %i[index create new]
+  resources :preferences, only: %i[index create new show edit update]
   resources :recipes, only: %i[index create new show]
 
   namespace :api do
