@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class RecipeGeneratorService
-  attr_reader :message, :user
+  attr_reader :message, :user, :preferences
 
   OPENAI_TEMPERATURE = ENV.fetch('OPENAI_TEMPERATURE', 0).to_f
   OPENAI_MODEL = ENV.fetch('OPENAI_MODEL', 'gpt-4')
@@ -9,6 +9,7 @@ class RecipeGeneratorService
   def initialize(message, user_id)
     @message = message
     @user = User.find(user_id)
+    @preferences = @user.preferences.select(&:restriction)
   end
 
   def call
@@ -42,18 +43,31 @@ class RecipeGeneratorService
 
   def prompt
     <<~CONTENT
-      Give me a recipe with the ingredients.
-      The result must return a JSON with the following format:
-      {
-        "name": "Dish Name",
-        "content": ""
-      }
+      I want you to create a recipe with the ingredients I specify.
+      I also have restrictions for what I'd like included.They have the format : restriction1 + restriction 2 ...If any ingredient matches the restrictions, please not used it.
+       Lastly, I want it in the following JSON format:
+
+          {
+            "name": "Dish Name",
+            "content": ""
+          }
+
+
+          Also, within "content," I want it formatted like this:
+
+          Ingredients :
+
+          Preparation :
+
+          Restrictions :(especificy title of the restriction and ingredients excluded because of that)
+
     CONTENT
   end
 
   def new_message
     [
-      { role: 'user', content: "Ingredients: #{message}" }
+      { role: 'user',
+        content: "\nIngredients: #{message} Restrictions:  #{preferences.map(&:description).join(' + ')}" }
     ]
   end
 
