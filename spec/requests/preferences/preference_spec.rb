@@ -64,7 +64,7 @@ describe 'Preferences' do
     context 'when fails' do
       let(:id) { preference.id + 1 }
 
-      it 'do\'nt update the preference' do
+      it 'doesn\'t update the preference' do
         subject
         expect(preference.reload.name).not_to eq('name_updated')
       end
