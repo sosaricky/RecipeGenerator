@@ -8,7 +8,7 @@ class PreferencesController < ApplicationController
     @pagy, @records = pagy(@preferences)
   end
 
-  def show;end
+  def show; end
 
   def new
     @preference = Preference.new
