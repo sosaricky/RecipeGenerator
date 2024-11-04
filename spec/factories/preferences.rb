@@ -18,7 +18,7 @@
 #
 FactoryBot.define do
   factory :preference do
-    id { Faker::Number.number }
+    id { Faker::Number.number(digits: 1) }
     name { Faker::Food.dish }
     description { Faker::Food.description }
     restriction { Faker::Boolean.boolean }
