@@ -42,14 +42,14 @@ describe 'Preferences' do
   describe 'PATCH update' do
     subject { patch preference_path(id), params: }
 
-    let(:id) { current_preference.id }
-    let(:current_preference) { create(:preference) }
+    let(:id) { preference.id }
+    let(:preference) { create(:preference) }
     let(:params) { { preference: { name: 'name_updated' } } }
 
     context 'when success' do
       it 'update the preference' do
         subject
-        expect(current_preference.reload.name).to eq('name_updated')
+        expect(preference.reload.name).to eq('name_updated')
       end
 
       it 'redirect to index' do
@@ -62,12 +62,11 @@ describe 'Preferences' do
     end
 
     context 'when fails' do
-      let(:id) { current_preference.id + 1 }
+      let(:id) { preference.id + 1 }
 
       it 'do\'nt update the preference' do
         subject
-        current_preference.reload
-        expect(current_preference.reload.name).not_to eq('name_updated')
+        expect(preference.reload.name).not_to eq('name_updated')
       end
 
       it 'have http status 404' do
