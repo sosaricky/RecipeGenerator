@@ -8,7 +8,7 @@ class PreferencesController < ApplicationController
     @pagy, @records = pagy(@preferences)
   end
 
-  def show;end
+  def show; end
 
   def new
     @preference = Preference.new
@@ -29,7 +29,7 @@ class PreferencesController < ApplicationController
     if @preference.update(preference_params)
       redirect_to preferences_path, notice: t('views.preferences.update_success')
     else
-      render plain: '404 Not Found', status: :not_found
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -40,6 +40,7 @@ class PreferencesController < ApplicationController
       redirect_to preferences_path, alert: t('views.preferences.destroy_failure')
     end
   end
+
   private
 
   def set_preference
