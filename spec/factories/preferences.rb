@@ -7,7 +7,7 @@
 #  id          :bigint           not null, primary key
 #  name        :string           not null
 #  description :text             not null
-#  restriction :boolean
+#  restriction :boolean          default(FALSE)
 #  user_id     :bigint           not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
@@ -18,6 +18,7 @@
 #
 FactoryBot.define do
   factory :preference do
+    id { Faker::Number.number }
     name { Faker::Food.dish }
     description { Faker::Food.description }
     restriction { Faker::Boolean.boolean }
