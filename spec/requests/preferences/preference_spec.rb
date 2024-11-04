@@ -37,6 +37,21 @@ describe 'Preferences' do
         expect(subject).to eq(422)
       end
     end
+
+    context 'when the max_preferences limit is reached' do
+
+      it 'doesn\'t create the preference' do
+        create_list(:preference, Preference::MAX_PREFERENCES, user:)
+        expect { subject }.not_to change(Preference, :count)
+      end
+    end
+
+    context 'when the max_preferences limit doesn\'t is reached' do
+      it 'create the preference' do
+        create(:preference, user:)
+        expect { subject }.to change(Preference, :count).by(1)
+      end
+    end
   end
 
   describe 'PATCH update' do
