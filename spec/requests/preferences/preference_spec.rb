@@ -39,7 +39,6 @@ describe 'Preferences' do
     end
 
     context 'when the max_preferences limit is reached' do
-
       it 'doesn\'t create the preference' do
         create_list(:preference, Preference::MAX_PREFERENCES, user:)
         expect { subject }.not_to change(Preference, :count)
