@@ -104,6 +104,8 @@ en:
       create_preference: Create Preference
       create_success: Preference successfully created.
       description: Description
+      destroy_failure: Failed to remove the preference.
+      destroy_success: Preference successfully removed.
       edit:
         description: ''
         title: Edit Preference
@@ -119,6 +121,7 @@ en:
       show_preference: Show Preference
       title: Preferences
       update_preference: Update Preference
+      update_success: Preference successfully updated.
     recipes:
       cancel: Cancel
       close_panel: Close
