@@ -9,7 +9,7 @@ class RecipeGeneratorService
   def initialize(message, user_id)
     @message = message
     @user = User.find(user_id)
-    @preferences = @user.preferences.select(&:restriction)
+    @preferences = @user.preferences
   end
 
   def call
@@ -43,32 +43,36 @@ class RecipeGeneratorService
 
   def prompt
     <<~CONTENT
-      I want you to create a recipe with the ingredients I specify.
-      I also have restrictions for what I'd like included.They have the format : restriction1 + restriction 2 ...If any ingredient matches the restrictions, please not used it.
-       Lastly, I want it in the following JSON format:
+      Give me a recipe using the ingredients and considering description and restriction attributes from preferences.
+      Also, if a preference is a restriction , it must be strictly followed.
 
-          {
-            "name": "Dish Name",
-            "content": ""
-          }
+      Additionally, I want the recipe provided in JSON with the following json format
 
-
+      {
+        "name": "Dish Name",
+        "content": ""
+      }
           Also, within "content," I want it formatted like this:
 
           Ingredients :
 
           Preparation :
 
-          Restrictions :(especificy title of the restriction and ingredients excluded because of that)
-
+          Preferences :(show description of the preferences and explain why ingredients are excluded)
     CONTENT
   end
 
   def new_message
     [
       { role: 'user',
-        content: "\nIngredients: #{message} Restrictions:  #{preferences.map(&:description).join(' + ')}" }
+        content: "\nIngredients: #{message} Preferences:  #{preferences_mapped}" }
     ]
+  end
+
+  def preferences_mapped
+    preferences.map do |p|
+      "Description : #{p.description}, Restriction: #{p.restriction}"
+    end
   end
 
   def openai_client
