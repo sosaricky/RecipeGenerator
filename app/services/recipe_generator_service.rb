@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class RecipeGeneratorService
-  attr_reader :message, :user
+  attr_reader :message, :user, :preferences
 
   OPENAI_TEMPERATURE = ENV.fetch('OPENAI_TEMPERATURE', 0).to_f
   OPENAI_MODEL = ENV.fetch('OPENAI_MODEL', 'gpt-4')
@@ -9,6 +9,7 @@ class RecipeGeneratorService
   def initialize(message, user_id)
     @message = message
     @user = User.find(user_id)
+    @preferences = @user.preferences
   end
 
   def call
@@ -42,19 +43,36 @@ class RecipeGeneratorService
 
   def prompt
     <<~CONTENT
-      Give me a recipe with the ingredients.
-      The result must return a JSON with the following format:
+      Give me a recipe using the ingredients and considering description and restriction attributes from preferences.
+      Also, if a preference is a restriction , it must be strictly followed.
+
+      Additionally, I want the recipe provided in JSON with the following json format
+
       {
         "name": "Dish Name",
         "content": ""
       }
+          Also, within "content," I want it formatted like this:
+
+          Ingredients :
+
+          Preparation :
+
+          Preferences :(show description of the preferences and explain why ingredients are excluded)
     CONTENT
   end
 
   def new_message
     [
-      { role: 'user', content: "Ingredients: #{message}" }
+      { role: 'user',
+        content: "\nIngredients: #{message} Preferences:  #{preferences_mapped}" }
     ]
+  end
+
+  def preferences_mapped
+    preferences.map do |preference|
+      "Description : #{preference.description}, Restriction: #{preference.restriction}"
+    end
   end
 
   def openai_client

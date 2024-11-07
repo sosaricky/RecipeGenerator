@@ -7,7 +7,7 @@
 #  id          :bigint           not null, primary key
 #  name        :string           not null
 #  description :text             not null
-#  restriction :boolean          default(FALSE)
+#  restriction :boolean          default(FALSE), not null
 #  user_id     :bigint           not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
