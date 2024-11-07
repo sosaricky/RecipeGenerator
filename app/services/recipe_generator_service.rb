@@ -70,8 +70,8 @@ class RecipeGeneratorService
   end
 
   def preferences_mapped
-    preferences.map do |p|
-      "Description : #{p.description}, Restriction: #{p.restriction}"
+    preferences.map do |preference|
+      "Description : #{preference.description}, Restriction: #{preference.restriction}"
     end
   end
 
