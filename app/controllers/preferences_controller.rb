@@ -2,7 +2,7 @@
 
 class PreferencesController < ApplicationController
   before_action :set_preference, only: %i[show edit update destroy]
-  before_action :check_max_preferences_reached, only: %i[create]
+
   def index
     @preferences = current_user.preferences
     @pagy, @records = pagy(@preferences)
@@ -47,12 +47,6 @@ class PreferencesController < ApplicationController
     @preference = Preference.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     render plain: '404 Not Found', status: :not_found
-  end
-
-  def check_max_preferences_reached
-    return unless current_user.preferences.count == Preference::MAX_PREFERENCES
-
-    redirect_to preferences_path, notice: t('views.preferences.limit_reached_message', max: Preference::MAX_PREFERENCES)
   end
 
   def preference_params

@@ -19,5 +19,11 @@
 class Preference < ApplicationRecord
   MAX_PREFERENCES = 5
   validates :name, :description, presence: true
+  validate :check_max_preferences_reached
   belongs_to :user
+
+  def check_max_preferences_reached
+    return unless user.preferences.count >= Preference::MAX_PREFERENCES
+      errors.add(:base, t('views.preferences.limit_reached_message', max: Preference::MAX_PREFERENCES))
+  end
 end

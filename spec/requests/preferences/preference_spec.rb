@@ -45,7 +45,7 @@ describe 'Preferences' do
       end
     end
 
-    context 'when the max_preferences limit doesn\'t is reached' do
+    context 'when the max_preferences limit isn\'t reached' do
       it 'create the preference' do
         create(:preference, user:)
         expect { subject }.to change(Preference, :count).by(1)
