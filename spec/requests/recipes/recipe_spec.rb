@@ -63,4 +63,37 @@ describe 'Recipes' do
       end
     end
   end
+
+  describe 'DELETE destroy' do
+    subject { delete recipe_path(id) }
+
+    let(:id) { recipe.id }
+    let!(:recipe) { create(:recipe) }
+
+    context 'when success' do
+      it 'destroy the recipe' do
+        expect { subject }.to change(Recipe, :count).by(-1)
+      end
+
+      it 'have http status 302' do
+        expect(subject).to eq(302)
+      end
+
+      it 'redirect to index' do
+        expect(subject).to redirect_to(recipes_path)
+      end
+
+      context 'when fails' do
+        let(:id) { recipe.id + 1 }
+
+        it 'doesn\'t destroy the recipe' do
+          expect { subject }.not_to change(Recipe, :count)
+        end
+
+        it 'have http status 404' do
+          expect(subject).to eq(404)
+        end
+      end
+    end
+  end
 end
