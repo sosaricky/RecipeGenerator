@@ -19,7 +19,7 @@
 require 'rails_helper'
 
 RSpec.describe Preference do
-  subject { create(:preference, user:) }
+  subject { build(:preference, user:) }
 
   let!(:user) { create(:user) }
 
@@ -31,14 +31,14 @@ RSpec.describe Preference do
       it 'doesn\'t create the preference' do
         create_list(:preference, Preference::MAX_PREFERENCES, user:)
         user.reload
-        expect { subject }.to raise_error(ActiveRecord::RecordInvalid, /You cannot add more preferences/)
+        expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid, /You cannot add more preferences/)
       end
     end
 
     context 'when the max_preferences limit isn\'t reached' do
       it 'create the preference' do
         user.reload
-        expect { subject }.to change(described_class, :count).by(1)
+        expect { subject.save! }.to change(described_class, :count).by(1)
       end
     end
   end
