@@ -19,11 +19,28 @@
 require 'rails_helper'
 
 RSpec.describe Preference do
-  describe 'validations' do
-    subject { build(:preference) }
+  subject { build(:preference, user:) }
 
+  let!(:user) { create(:user) }
+
+  describe 'validations' do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:description) }
+
+    context 'when the max_preferences limit is reached' do
+      it 'doesn\'t create the preference' do
+        create_list(:preference, Preference::MAX_PREFERENCES, user:)
+        user.reload
+        expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid, /You cannot add more preferences/)
+      end
+    end
+
+    context 'when the max_preferences limit isn\'t reached' do
+      it 'create the preference' do
+        user.reload
+        expect { subject.save! }.to change(described_class, :count).by(1)
+      end
+    end
   end
 
   describe 'associations' do
