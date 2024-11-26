@@ -10,3 +10,4 @@
 1. `rails assets:precompile` to precompile assets
 1. Run `bin/dev`.
 
+Thanks Rootstrap for the template!
