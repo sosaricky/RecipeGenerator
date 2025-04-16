@@ -15,7 +15,7 @@
         </div>
         <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-primary-600 px-6 pb-4 hidden" data-<%= controller %>-target="items">
           <div class="flex h-16 shrink-0 items-center w-10">
-            <%= render RS::Logo::Component.new(src: asset_path('icons/mark_light.svg'), alt: t("components.rs.sidebar.logo.alt")) %>
+            <%= render RS::Logo::Component.new(src: 'icons/mark_light.svg', alt: t("components.rs.sidebar.logo.alt")) %>
           </div>
           <nav class="flex flex-1 flex-col">
             <% sections.each do |section| %>
@@ -29,7 +29,7 @@
   <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex" data-<%= controller %>-target="overlay">
     <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-primary-600 px-4 pb-4">
       <div class="flex h-16 shrink-0 items-center w-10">
-        <%= render RS::Logo::Component.new(src: asset_path('icons/mark_light.svg'), alt: t("components.rs.sidebar.logo.alt")) %>
+        <%= render RS::Logo::Component.new(src: 'icons/mark_light.svg', alt: t("components.rs.sidebar.logo.alt")) %>
       </div>
       <nav class="flex flex-1 flex-col">
         <% sections.each do |section| %>

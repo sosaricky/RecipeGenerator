@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe RS::Logo::Component, type: :component do
   let(:alt) { 'My company' }
-  let(:src) { instance_double('mark', content_type: 'svg', original_filename: 'mark') }
+  let(:src) { 'icons/mark_light.svg' }
   let(:component) { described_class.new(src:, alt:) }
   let(:rendered_component) { render_inline(component) }
 
