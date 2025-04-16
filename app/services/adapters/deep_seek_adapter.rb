@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'httparty'
 module Adapters
   class DeepSeekAdapter
     def message_to_chat_api(request_messages)
