@@ -8,7 +8,7 @@ describe 'Recipes' do
   let(:params) { { recipe: recipe.attributes } }
 
   before do
-    stub_request(:post, 'https://api.openai.com/v1/chat/completions')
+    stub_request(:post, 'https://api.deepseek.com/chat/completions')
       .to_return(
         body:
         {
