@@ -14,7 +14,7 @@ class RecipesController < ApplicationController
   end
 
   def create
-    @adapter = DeepSeekAdapter.new
+    @adapter = Adapters::DeepSeekAdapter.new
     @recipe = RecipeGeneratorService.new(recipe_params[:ingredients], current_user.id, @adapter).call
     if @recipe.save
       redirect_to recipes_path, notice: t('views.recipes.create_success')
