@@ -19,4 +19,5 @@ test:
 # It will take precedence over the config defined here.
 # https://edgeguides.rubyonrails.org/configuring.html#connection-preference
 production:
+  <<: *default
   url: <%= ENV['DATABASE_URL'] %>
