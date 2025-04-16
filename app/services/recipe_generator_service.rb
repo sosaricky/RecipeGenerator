@@ -1,20 +1,21 @@
 # frozen_string_literal: true
 
+require_relative 'adapters/deep_seek_adapter'
+require_relative '../utils/code_snippet_parser'
+
 class RecipeGeneratorService
-  attr_reader :message, :user, :preferences
+  attr_reader :message, :user, :preferences, :adapter
 
-  OPENAI_TEMPERATURE = ENV.fetch('OPENAI_TEMPERATURE', 0).to_f
-  OPENAI_MODEL = ENV.fetch('OPENAI_MODEL', 'gpt-4')
-
-  def initialize(message, user_id)
+  def initialize(message, user_id, adapter)
     @message = message
     @user = User.find(user_id)
     @preferences = @user.preferences
+    @adapter = adapter
   end
 
   def call
     check_valid_message_length
-    response = message_to_chat_api
+    response = adapter.message_to_chat_api(request_messages)
     create_recipe(response)
   end
 
@@ -25,41 +26,35 @@ class RecipeGeneratorService
     raise RecipeGeneratorServiceError, error_msg unless !!(message =~ /\b\w+\b/)
   end
 
-  def message_to_chat_api
-    openai_client.chat(parameters: {
-                         model: OPENAI_MODEL,
-                         messages: request_messages,
-                         temperature: OPENAI_TEMPERATURE
-                       })
-  end
+  def prompt
+    <<~CONTENT
+      Genera una receta como UN ÚNICO STRING de texto formateado INTERNAMENTE como JSON válido,
+      siguiendo ESTRICTAMENTE estas reglas:
 
-  def request_messages
-    system_message + new_message
+      1) Estructura EXACTA:
+         "{"name": "Nombre", "content": "Ingredients:\\n- item1\\n- item2\\nPreparation:\\n1. Paso1\\nPreferences:\\n- Descripción"}"
+
+      2) REQUERIMIENTOS TÉCNICOS:
+         - Nunca uses ```json o marcas de código
+         - El output debe ser UN SOLO STRING parseable directamente con JSON.parse()
+
+      3) Formato de 'content':
+         Ingredients:
+         - Lista con viñetas (usar \\n-)
+         Preparation:
+         - Pasos numerados (usar \\n1., \\n2.)
+         Preferences:
+         - Explicar exclusiones por restricciones
+
+      4) Preferencias a considerar: [lista tus preferencias aquí]
+         * Las RESTRICCIONES son OBLIGATORIAS
+         * Las preferencias son sugerencias
+
+    CONTENT
   end
 
   def system_message
     [{ role: 'system', content: prompt }]
-  end
-
-  def prompt
-    <<~CONTENT
-      Give me a recipe using the ingredients and considering description and restriction attributes from preferences.
-      Also, if a preference is a restriction , it must be strictly followed.
-
-      Additionally, I want the recipe provided in JSON with the following json format
-
-      {
-        "name": "Dish Name",
-        "content": ""
-      }
-          Also, within "content," I want it formatted like this:
-
-          Ingredients :
-
-          Preparation :
-
-          Preferences :(show description of the preferences and explain why ingredients are excluded)
-    CONTENT
   end
 
   def new_message
@@ -69,20 +64,22 @@ class RecipeGeneratorService
     ]
   end
 
+  def request_messages
+    system_message + new_message
+  end
+
   def preferences_mapped
     preferences.map do |preference|
       "Description : #{preference.description}, Restriction: #{preference.restriction}"
     end
   end
 
-  def openai_client
-    @openai_client ||= OpenAI::Client.new
-  end
-
   def create_recipe(response)
     parsed_response = response.is_a?(String) ? JSON.parse(response) : response
-    content = JSON.parse(parsed_response.dig('choices', 0, 'message', 'content'))
-    Recipe.new(name: content['name'], ingredients: message, description: content['content'], user:)
+    content = parsed_response.dig('choices', 0, 'message', 'content')
+    json_string = CodeSnippetParser.parse_snippet(content)
+    json_parsed = JSON.parse(json_string)
+    Recipe.new(name: json_parsed['name'], ingredients: message, description: json_parsed['content'], user:)
   rescue JSON::ParserError => exception
     raise RecipeGeneratorServiceError, exception.message
   end
