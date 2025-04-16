@@ -86,7 +86,7 @@ en:
         sign_in_button: Log in
   hello: Hello
   home:
-    title: rails_enterprise
+    title: Recipe generator
   layouts:
     application:
       dashboard: Dashboard
