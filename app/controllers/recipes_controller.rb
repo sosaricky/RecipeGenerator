@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative '../services/adapters/deep_seek_adapter'
 class RecipesController < ApplicationController
   before_action :set_recipe, only: %i[show destroy]
   def index
@@ -13,7 +14,8 @@ class RecipesController < ApplicationController
   end
 
   def create
-    @recipe = RecipeGeneratorService.new(recipe_params[:ingredients], current_user.id).call
+    @adapter = DeepSeekAdapter.new
+    @recipe = RecipeGeneratorService.new(recipe_params[:ingredients], current_user.id, @adapter).call
     if @recipe.save
       redirect_to recipes_path, notice: t('views.recipes.create_success')
     else
